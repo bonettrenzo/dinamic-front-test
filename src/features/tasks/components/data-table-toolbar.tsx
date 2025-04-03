@@ -20,7 +20,7 @@ export function DataTableToolbar<TData>({
       <div className='flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2'>
 
         <div className='flex gap-x-2'>
-          {table.getColumn('status') && (
+          {/* {table.getColumn('status') && (
             <DataTableFacetedFilter
               column={table.getColumn('status')}
               title='Status'
@@ -33,7 +33,7 @@ export function DataTableToolbar<TData>({
               title='Priority'
               options={priorities}
             />
-          )}
+          )} */}
         </div>
         {isFiltered && (
           <Button

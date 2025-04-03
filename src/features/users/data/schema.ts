@@ -1,3 +1,4 @@
+import { Medico } from '@/features/tasks/data/tasks'
 import { z } from 'zod'
 
 const userStatusSchema = z.union([
@@ -30,3 +31,17 @@ const userSchema = z.object({
 export type User = z.infer<typeof userSchema>
 
 export const userListSchema = z.array(userSchema)
+/*         public int Id { get; set; }
+        public string Especialidad { get; set; }
+        public DateTime FechaHora { get; set; }
+        public string Estado { get; set; } = "Disponible";
+        public int IdMedico { get; set; }
+        public Medico Medico { get; set; }  */
+export interface Cita{
+  Id?: number
+  Especialidad: string
+  FechaHora: Date
+  Estado: string
+  IdMedico: number
+  Medico: Medico
+}

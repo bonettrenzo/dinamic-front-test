@@ -1,5 +1,5 @@
 import { useUsers } from '../context/users-context'
-import { UsersActionDialog } from './users-action-dialog'
+import { CitaDialog } from './users-action-dialog'
 import { UsersDeleteDialog } from './users-delete-dialog'
 import { UsersInviteDialog } from './users-invite-dialog'
 
@@ -7,7 +7,7 @@ export function UsersDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useUsers()
   return (
     <>
-      <UsersActionDialog
+      <CitaDialog
         key='user-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
@@ -21,8 +21,8 @@ export function UsersDialogs() {
 
       {currentRow && (
         <>
-          <UsersActionDialog
-            key={`user-edit-${currentRow.id}`}
+          <CitaDialog
+            key={`user-edit-${currentRow.Id}`}
             open={open === 'edit'}
             onOpenChange={() => {
               setOpen('edit')
@@ -30,11 +30,10 @@ export function UsersDialogs() {
                 setCurrentRow(null)
               }, 500)
             }}
-            currentRow={currentRow}
           />
 
           <UsersDeleteDialog
-            key={`user-delete-${currentRow.id}`}
+            key={`user-delete-${currentRow.Id}`}
             open={open === 'delete'}
             onOpenChange={() => {
               setOpen('delete')

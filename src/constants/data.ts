@@ -1,4 +1,9 @@
-import { NavItem } from '@/types';
+interface NavItem {
+  title: string;
+  href: string;
+  icon: string;
+  label: string;
+}
 
 export const navItems: NavItem[] = [
   {
@@ -19,6 +24,11 @@ export const Especialidades = [
   { label: 'Medicina general', value: 'medicina_general' },
   { label: 'Examen odontológico', value: 'examen_odontologico' },
 ]
+
+export const CITA_ESTADOS = {
+  DISPONIBLE: 'Disponible',
+  RESERVADA: 'Reservada',
+};
 
 export const users = [
   {
