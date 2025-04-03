@@ -1,8 +1,8 @@
 import { HTMLAttributes, useState } from 'react'
-import { z } from 'zod'
+import { date, z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react'
+import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { PasswordInput } from '@/components/password-input'
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { IconCalendar } from '@tabler/icons-react'
@@ -23,6 +22,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useAuthStore } from '@/lib/store/auth-store'
+import * as pacienteService from '@/lib/service/paciente.service'
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>
 
@@ -36,8 +37,11 @@ const formSchema = z.object({
   telefono: z.string().min(1, { message: 'Por favor ingrese su teléfono' }),
 })
 
+
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const setUser = useAuthStore((state) => state.setUser)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,18 +49,32 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       nombres: '',
       apellidos: '',
       documento: '',
+      fechaNacimiento: new Date(),
       telefono: '',
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
+    try {
+      // Transformar los datos al formato esperado por el servicio
+      const pacienteData = {
+        Nombres: data.nombres,
+        Apellidos: data.apellidos,
+        Documento: data.documento,
+        FechaNacimiento: data.fechaNacimiento.toISOString(),
+        Telefono: data.telefono,
+      }
 
-    setTimeout(() => {
+      const paciente = await pacienteService.createPaciente(pacienteData)
+      
+      setUser(paciente)
+      navigate({ to: '/' })
+    } catch (error) {
+      console.error('Registration error:', error)
+    } finally {
       setIsLoading(false)
-    }, 3000)
+    }
   }
 
   return (
@@ -160,10 +178,6 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
             <Button className='mt-2' disabled={isLoading}>
               Crear Cuenta
             </Button>
-
-
-
-
           </div>
         </form>
       </Form>

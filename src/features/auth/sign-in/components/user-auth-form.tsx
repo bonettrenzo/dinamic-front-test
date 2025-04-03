@@ -2,7 +2,7 @@ import { HTMLAttributes, useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,38 +14,45 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useAuthStore } from '@/lib/store/auth-store'
+import * as authService from '@/lib/service/auth.service.ts'
+import { toast, ToastContainer } from 'react-toastify';
+
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>
 
 const formSchema = z.object({
   documento: z.string().min(1, {
-    message: "Porfavor ingesa un documento valido"
+    message: "Por favor ingrese un documento válido"
   }),
-  fechaNacimiento: z
-    .date()
-    .min(new Date("1900-01-01"), {
-      message: "Porfavor ingresa una fecha valido"
-    })
+  fechaNacimiento: z.string().min(1, {
+    message: "Por favor ingrese una fecha válida"
+  })
 })
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const setUser = useAuthStore((state) => state.setUser)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       documento: '',
-      fechaNacimiento: new Date(),
+      fechaNacimiento: '',
     },
   })
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
     try {
-      // TODO: Replace with actual API call
-
-      console.log(data)
-
+ 
+      const user = await authService.login({documento: data.documento, fechaNacimiento: data.fechaNacimiento})
+      
+      setUser(user)
+      navigate({ to: '/' })
+    } catch (error) {
+      console.error('Authentication error:', error)
     } finally {
       setIsLoading(false)
     }
@@ -79,7 +86,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     <Input 
                       type="date" 
                       {...field} 
-                      value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -107,6 +113,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </div>
         </form>
       </Form>
+      <ToastContainer />
     </div>
   )
 }

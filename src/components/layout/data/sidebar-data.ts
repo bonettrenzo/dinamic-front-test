@@ -55,7 +55,7 @@ export const sidebarData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
-          title: 'Tasks',
+          title: 'Medico',
           url: '/tasks',
           icon: IconChecklist,
         },

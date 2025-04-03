@@ -2,13 +2,13 @@ import { toast } from '@/hooks/use-toast'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { useTasks } from '../context/tasks-context'
 import { TasksImportDialog } from './tasks-import-dialog'
-import { TasksMutateDrawer } from './tasks-mutate-drawer'
+import { MedicoMutateDrawer } from './tasks-mutate-drawer'
 
-export function TasksDialogs() {
+export function   TasksDialogs() {
   const { open, setOpen, currentRow, setCurrentRow } = useTasks()
   return (
     <>
-      <TasksMutateDrawer
+      <MedicoMutateDrawer
         key='task-create'
         open={open === 'create'}
         onOpenChange={() => setOpen('create')}
@@ -22,7 +22,7 @@ export function TasksDialogs() {
 
       {currentRow && (
         <>
-          <TasksMutateDrawer
+          <MedicoMutateDrawer
             key={`task-update-${currentRow.id}`}
             open={open === 'update'}
             onOpenChange={() => {

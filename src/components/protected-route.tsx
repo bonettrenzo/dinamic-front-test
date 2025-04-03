@@ -1,28 +1,16 @@
-import { useEffect } from 'react'
-import { useNavigate } from '@tanstack/react-router'
-import { useAuth } from '@/context/auth-context'
+import { Navigate, Outlet } from '@tanstack/react-router'
+import { useAuthStore } from '@/lib/store/auth-store'
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
-  requireAuth?: boolean
+  children?: React.ReactNode
 }
 
-export function ProtectedRoute({ children, requireAuth = true }: ProtectedRouteProps) {
-  const { isAuthenticated } = useAuth()
-  const navigate = useNavigate()
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { isAuthenticated } = useAuthStore()
 
-  useEffect(() => {
-    if (requireAuth && !isAuthenticated) {
-      navigate({ to: '/sign-in' })
-    } else if (!requireAuth && isAuthenticated) {
-      navigate({ to: '/' })
-    }
-  }, [isAuthenticated, requireAuth, navigate])
-
-  // Don't render anything while redirecting
-  if ((requireAuth && !isAuthenticated) || (!requireAuth && isAuthenticated)) {
-    return null
+  if (!isAuthenticated) {
+    return <Navigate to="/sign-in" />
   }
 
-  return <>{children}</>
+  return children ? <>{children}</> : <Outlet />
 } 
