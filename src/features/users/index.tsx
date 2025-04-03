@@ -8,14 +8,11 @@ import { UsersDialogs } from './components/users-dialogs'
 import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersTable } from './components/users-table'
 import UsersProvider from './context/users-context'
-import { Cita, userListSchema } from './data/schema'
+import { Cita } from './data/schema'
 import { useEffect, useState } from 'react'
 import * as citasService from '@/lib/service/citas.service'
 
-
-
 export default function Users() {
-  // Parse user list
 
   const [citas, setCitas] = useState<Cita[]>([])
 
