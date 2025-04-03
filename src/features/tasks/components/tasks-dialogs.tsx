@@ -4,7 +4,7 @@ import { useTasks } from '../context/tasks-context'
 import { TasksImportDialog } from './tasks-import-dialog'
 import { MedicoMutateDrawer } from './tasks-mutate-drawer'
 
-export function   TasksDialogs() {
+export function  TasksDialogs({getMedicos}: {getMedicos: Function}) {
   const { open, setOpen, currentRow, setCurrentRow } = useTasks()
   return (
     <>
@@ -12,6 +12,7 @@ export function   TasksDialogs() {
         key='task-create'
         open={open === 'create'}
         onOpenChange={() => setOpen('create')}
+        getMedicos={getMedicos}
       />
 
       <TasksImportDialog
@@ -32,6 +33,7 @@ export function   TasksDialogs() {
               }, 500)
             }}
             currentRow={currentRow}
+            getMedicos={getMedicos}
           />
 
           <ConfirmDialog

@@ -31,7 +31,8 @@ import { Especialidades } from '@/constants/data'
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow?: Medico
+  currentRow?: Medico,
+  getMedicos: Function
 }
 
 const formSchema = z.object({
@@ -41,7 +42,7 @@ const formSchema = z.object({
 
 type MedicoForm = z.infer<typeof formSchema>
 
-export function MedicoMutateDrawer({ open, onOpenChange, currentRow }: Props) {
+export function MedicoMutateDrawer({ open, onOpenChange, currentRow, getMedicos }: Props) {
   const isUpdate = !!currentRow
   const form = useForm<MedicoForm>({
     resolver: zodResolver(formSchema),
@@ -55,7 +56,7 @@ export function MedicoMutateDrawer({ open, onOpenChange, currentRow }: Props) {
 
 
     await medicoService.createMedico({Nombre: data.nombre, "Especialidad": data.especialidad})
-
+    await getMedicos()
     onOpenChange(false)
     form.reset()
     toast({

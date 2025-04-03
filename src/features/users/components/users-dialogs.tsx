@@ -3,7 +3,7 @@ import { CitaDialog } from './users-action-dialog'
 import { UsersDeleteDialog } from './users-delete-dialog'
 import { UsersInviteDialog } from './users-invite-dialog'
 
-export function UsersDialogs() {
+export function UsersDialogs({getCitas}: {getCitas: Function}) {
   const { open, setOpen, currentRow, setCurrentRow } = useUsers()
   return (
     <>
@@ -11,6 +11,7 @@ export function UsersDialogs() {
         key='user-add'
         open={open === 'add'}
         onOpenChange={() => setOpen('add')}
+        getCitas={getCitas}
       />
 
       <UsersInviteDialog
@@ -24,6 +25,7 @@ export function UsersDialogs() {
           <CitaDialog
             key={`user-edit-${currentRow.Id}`}
             open={open === 'edit'}
+            getCitas={getCitas}
             onOpenChange={() => {
               setOpen('edit')
               setTimeout(() => {

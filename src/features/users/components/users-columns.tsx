@@ -58,11 +58,11 @@ export const columns: ColumnDef<Cita>[] = [
       <DataTableColumnHeader column={column} title='Estado' />
     ),
     cell: ({ row }) => {
-      const estado = row.getValue('estado');
-      const color = estado === CITA_ESTADOS.DISPONIBLE ? 'bg-green-500' : 'bg-red-500';
+      const  estado = String(row.getValue('estado'));
+      const color = estado.toLowerCase() === CITA_ESTADOS.DISPONIBLE.toLowerCase() ? 'bg-green-500' : 'bg-red-500';
       return (
         <Badge variant='outline' className={cn('capitalize', color)}>
-         {/*  {estado} */}
+           {estado} 
         </Badge>
       );
     },
@@ -73,9 +73,13 @@ export const columns: ColumnDef<Cita>[] = [
   {
     accessorKey: 'idMedico',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='ID Médico' />
+      <DataTableColumnHeader column={column} title='Nombre Médico' />
     ),
-    cell: ({ row }) => <div>{row.getValue('idMedico')}</div>,
+    cell: ({ row }) => {
+      const medico: any = row.getValue('medico');
+      
+      return <div>{`${medico?.nombre} ${medico?.especialidad}`}</div>;
+    },
   },
   {
     accessorKey: 'medico',

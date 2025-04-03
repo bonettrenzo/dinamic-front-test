@@ -22,6 +22,11 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { SelectDropdown } from '@/components/select-dropdown'
+import * as medicoService from '@/lib/service/medico.service'
+import { use, useEffect, useState } from 'react'
+import { Medico } from '@/features/tasks/data/tasks'
+import { CITA_ESTADOS, Especialidades } from '@/constants/data'
+import * as citasService from '@/lib/service/citas.service'
 
 const formSchema = z.object({
   Especialidad: z.string().min(1, { message: 'Especialidad es requerida.' }),
@@ -35,21 +40,46 @@ type CitaForm = z.infer<typeof formSchema>
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
+  getCitas: Function
 }
 
-export function CitaDialog({ open, onOpenChange }: Props) {
+
+export function CitaDialog({ open, onOpenChange, getCitas }: Props) {
   const form = useForm<CitaForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      Especialidad: '',
-      FechaHora: '',
-      Estado: '',
-      IdMedico: 0,
+      Especialidad: 'medicina_general',
+      FechaHora: '2025-04-03T09:33',
+      Estado: 'DISPONIBLE',
+      IdMedico: 1,
     },
   })
 
-  const onSubmit = (values: CitaForm) => {
+   const getMedicos = async () => {
+    medicoService.getMedicos().then(res => {
+      setMedicos(res)
+    })
+  };
+ 
+  const [medicos, setMedicos] = useState<Medico[]>([])
+
+
+  useEffect(() => {
+    getMedicos()
+  }, [])
+
+
+
+  const onSubmit = async (values: CitaForm) => {
     form.reset()
+
+    await citasService.createCita({
+      especialidad: values.Especialidad,
+      estado: values.Estado,
+      fechaHora: values.FechaHora,
+      idMedico: values.IdMedico,
+    })
+    getCitas()
     toast({
       title: 'Datos de la cita:',
       description: (
@@ -77,11 +107,16 @@ export function CitaDialog({ open, onOpenChange }: Props) {
         <div className='-mr-4 h-[26.25rem] w-full overflow-y-auto py-1 pr-4'>
           <Form {...form}>
             <form id='cita-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-4 p-0.5'>
-              <FormField control={form.control} name='Especialidad' render={({ field }) => (
+              <FormField control={form.control} name="Especialidad" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Especialidad</FormLabel>
                   <FormControl>
-                    <Input placeholder='Ej. Cardiología' {...field} />
+                    <SelectDropdown
+                      items={Especialidades}
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                      placeholder="Selecciona una especialidad"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -95,22 +130,39 @@ export function CitaDialog({ open, onOpenChange }: Props) {
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={form.control} name='Estado' render={({ field }) => (
+              <FormField control={form.control} name="Estado" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Estado</FormLabel>
                   <FormControl>
-                    <Input placeholder='Ej. Pendiente' {...field} />
+                    <SelectDropdown
+                      items={Object.entries(CITA_ESTADOS).map(([value, label]) => ({ label, value }))}
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                      placeholder="Selecciona un estado"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
-              <FormField control={form.control} name='IdMedico' render={({ field }) => (
+              <FormField control={form.control} name="IdMedico" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Médico</FormLabel>
-                  {/* <SelectDropdown defaultValue={""} onValueChange={field.onChange} placeholder='Seleccione un médico' /> */}
+                  <FormControl>
+                    <SelectDropdown
+                      items={medicos.map(medico => ({
+                        label: medico.nombre,
+                        value: String(medico.id),
+                      }))}
+                      defaultValue={String(field.value)}
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      placeholder="Selecciona un médico"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
+
+
             </form>
           </Form>
         </div>

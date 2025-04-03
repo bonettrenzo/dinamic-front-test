@@ -16,12 +16,15 @@ import { Medico } from './data/tasks'
 export default function Tasks() {
 
   const [medicos, setMedicos] = useState<Medico[]>([])
+
+  const getMedicos = async () => {
+    medicoService.getMedicos().then(res => {
+      setMedicos(res)
+    })
+  };
   
   useEffect(() => {
-    medicoService.getMedicos().then((data) => {
-      setMedicos(data)
-    })
-
+    getMedicos()
   }, [])
 
   return (
@@ -46,7 +49,7 @@ export default function Tasks() {
         </div>
       </Main>
 
-      <TasksDialogs />
+      <TasksDialogs getMedicos={getMedicos} />
     </TasksProvider>
   )
 }

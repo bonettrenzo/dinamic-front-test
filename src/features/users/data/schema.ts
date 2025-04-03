@@ -43,5 +43,5 @@ export interface Cita{
   FechaHora: Date
   Estado: string
   IdMedico: number
-  Medico: Medico
+  medico: Medico
 }

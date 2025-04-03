@@ -9,7 +9,6 @@ import { UsersPrimaryButtons } from './components/users-primary-buttons'
 import { UsersTable } from './components/users-table'
 import UsersProvider from './context/users-context'
 import { Cita, userListSchema } from './data/schema'
-import { users } from './data/users'
 import { useEffect, useState } from 'react'
 import * as citasService from '@/lib/service/citas.service'
 
@@ -17,12 +16,15 @@ import * as citasService from '@/lib/service/citas.service'
 
 export default function Users() {
   // Parse user list
-  const userList = userListSchema.parse(users)
 
   const [citas, setCitas] = useState<Cita[]>([])
 
-  useEffect(() => {
+  const getCitas = async () => {
     citasService.getCitas().then(setCitas)
+  }
+
+  useEffect(() => {
+    getCitas()
   }, [])
 
   return (
@@ -48,7 +50,7 @@ export default function Users() {
         </div>
       </Main>
 
-      <UsersDialogs />
+      <UsersDialogs getCitas={getCitas} />
     </UsersProvider>
   )
 }

@@ -7,7 +7,7 @@ interface CitaModel {
     especialidad: string;
     fechaHora: string;
     estado: string;
-    idMedico: string;
+    idMedico: number;
 }
 
 export const getCitas = async () => {
