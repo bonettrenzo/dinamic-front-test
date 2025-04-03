@@ -23,7 +23,7 @@ export function UsersDialogs({getCitas}: {getCitas: Function}) {
       {currentRow && (
         <>
           <CitaDialog
-            key={`user-edit-${currentRow.Id}`}
+            key={`user-edit-${currentRow.id}`}
             open={open === 'edit'}
             getCitas={getCitas}
             onOpenChange={() => {
@@ -35,7 +35,7 @@ export function UsersDialogs({getCitas}: {getCitas: Function}) {
           />
 
           <UsersDeleteDialog
-            key={`user-delete-${currentRow.Id}`}
+            key={`user-delete-${currentRow.id}`}
             open={open === 'delete'}
             onOpenChange={() => {
               setOpen('delete')

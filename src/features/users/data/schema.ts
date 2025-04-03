@@ -38,10 +38,10 @@ export const userListSchema = z.array(userSchema)
         public int IdMedico { get; set; }
         public Medico Medico { get; set; }  */
 export interface Cita{
-  Id?: number
-  Especialidad: string
+  id?: number
+  especialidad: string
   FechaHora: Date
-  Estado: string
+  estado: string
   IdMedico: number
   medico: Medico
 }

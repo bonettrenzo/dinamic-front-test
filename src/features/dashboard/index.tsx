@@ -1,189 +1,132 @@
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useState } from 'react'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { TopNav } from '@/components/layout/top-nav'
 import { ProfileDropdown } from '@/components/profile-dropdown'
-import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
-import { Overview } from './components/overview'
-import { RecentSales } from './components/recent-sales'
+import { CITA_ESTADOS, Especialidades } from '@/constants/data'
+import { SelectDropdown } from '@/components/select-dropdown'
+import { FormProvider, useForm } from 'react-hook-form'
+import * as citasService from '@/lib/service/citas.service'
+import { Cita } from '../users/data/schema'
+import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import { toast } from '@/hooks/use-toast'
 
 export default function Dashboard() {
-  return (
-    <>
-      {/* ===== Top Heading ===== */}
-      <Header>
-        <TopNav links={[]} />
-        <div className='ml-auto flex items-center space-x-4'>
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
+  const [selectedEspecialidad, setSelectedEspecialidad] = useState<string>("")
+  const [citasByEspecialidad, setCitasByEspecialidad] = useState<Cita[]>([])
 
-      {/* ===== Main ===== */}
-      <Main>
-        <div className='mb-2 flex items-center justify-between space-y-2'>
-          <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
-          <div className='flex items-center space-x-2'>
-            <Button>Download</Button>
+  const methods = useForm()
+
+  const onValueChangeEspecialidad = (value: string) => {
+    setCitasByEspecialidad([])
+    setSelectedEspecialidad(value)
+    citasService.getByEspecialidad(value).then(res => {
+      setCitasByEspecialidad(res) 
+    })
+  }
+
+  const actualizarDisponibilidad = async (cita: Cita) => {
+    const id = cita.id;
+    if (!id) return;
+
+
+    if(cita.estado === CITA_ESTADOS.RESERVADA) {
+      toast({
+        title: 'Error al actualizar la disponibilidad',
+        description: (
+          <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+            <code className='text-white'>
+              Esta no se puede tomar porque ya esta reservada
+            </code>
+          </pre>
+        ),
+      })
+      return
+    }
+
+    
+     await citasService.actualizarDisponibilidad(id, CITA_ESTADOS.RESERVADA)
+     onValueChangeEspecialidad(selectedEspecialidad) 
+  }
+
+
+  return (
+    <FormProvider {...methods}>
+      <>
+        {/* ===== Top Heading ===== */}
+        <Header>
+          <TopNav links={[]} />
+          <div className='ml-auto flex items-center space-x-4'>
+            <ThemeSwitch />
+            <ProfileDropdown />
           </div>
-        </div>
-        <Tabs
-          orientation='vertical'
-          defaultValue='overview'
-          className='space-y-4'
-        >
-          <div className='w-full overflow-x-auto pb-2'>
-            <TabsList>
-              <TabsTrigger value='overview'>Overview</TabsTrigger>
-              <TabsTrigger value='analytics' disabled>
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger value='reports' disabled>
-                Reports
-              </TabsTrigger>
-              <TabsTrigger value='notifications' disabled>
-                Notifications
-              </TabsTrigger>
-            </TabsList>
+        </Header>
+
+        {/* ===== Main ===== */}
+        <Main>
+          <div className='mb-2 flex items-center justify-between space-y-2'>
+            <h1 className='text-2xl font-bold tracking-tight'>Tomar Cita</h1>
           </div>
-          <TabsContent value='overview' className='space-y-4'>
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Total Revenue
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
+          <Tabs
+            orientation='vertical'
+            defaultValue='overview'
+            className='space-y-4'
+          >
+            <TabsContent value='overview' className='space-y-4'>
+              <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+
+                {/* SELECT */}
+                <SelectDropdown
+                  items={Especialidades}
+                  defaultValue={selectedEspecialidad}
+                  onValueChange={onValueChangeEspecialidad}
+                  placeholder="Selecciona una especialidad"
+                />
+
+              </div>
+
+              <Separator className='shadow' />
+
+              <ul className='faded-bottom no-scrollbar grid gap-4 overflow-auto pb-16 pt-4 md:grid-cols-2 lg:grid-cols-3'>
+                { citasByEspecialidad?.map((cita) => (
+                  <li
+                    key={cita.id}
+                    className='rounded-lg border p-4 hover:shadow-md'
                   >
-                    <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>$45,231.89</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Subscriptions
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' />
-                    <circle cx='9' cy='7' r='4' />
-                    <path d='M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+2350</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +180.1% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>Sales</CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <rect width='20' height='14' x='2' y='5' rx='2' />
-                    <path d='M2 10h20' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+12,234</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                  <CardTitle className='text-sm font-medium'>
-                    Active Now
-                  </CardTitle>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth='2'
-                    className='h-4 w-4 text-muted-foreground'
-                  >
-                    <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-                  </svg>
-                </CardHeader>
-                <CardContent>
-                  <div className='text-2xl font-bold'>+573</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +201 since last hour
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-7'>
-              <Card className='col-span-1 lg:col-span-4'>
-                <CardHeader>
-                  <CardTitle>Overview</CardTitle>
-                </CardHeader>
-                <CardContent className='pl-2'>
-                  <Overview />
-                </CardContent>
-              </Card>
-              <Card className='col-span-1 lg:col-span-3'>
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <RecentSales />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </Main>
-    </>
+                    <div className='mb-8 flex items-center justify-between'>
+                      <div
+                        className={`flex size-10 items-center justify-center rounded-lg bg-muted p-2`}
+                      >
+                        {/* Icono de especialidad o un placeholder */}
+                        🏥
+                      </div>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={() => actualizarDisponibilidad(cita)} 
+                        className={`${cita.estado.toLowerCase() === CITA_ESTADOS.DISPONIBLE.toLowerCase() ? 'border border-green-300 bg-green-50 hover:bg-green-100 dark:border-green-700 dark:bg-green-950 dark:hover:bg-green-900' : 'border border-red-300 bg-red-50 hover:bg-red-100 dark:border-red-700 dark:bg-red-950 dark:hover:bg-red-900'}`}
+                      >
+                        {cita.estado}
+                      </Button>
+                    </div>
+                    <div>
+                      <h2 className='mb-1 font-semibold'>{cita.especialidad}</h2>
+                      <p className='text-gray-500'>Médico: {cita.medico.nombre}</p>
+                      <p className='text-gray-500'>Fecha: {new Date(cita.FechaHora).toLocaleString()}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+
+
+            </TabsContent>
+          </Tabs>
+        </Main>
+      </>
+    </FormProvider>
   )
 }
-

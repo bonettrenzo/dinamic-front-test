@@ -39,6 +39,15 @@ export const getCitaDocumento = async (documento: string) => {
     const response = await axios.get(`${API_URL}/api/Cita/documento/${documento}`);
     return response.data;
 };
+export const getByEspecialidad = async (especialidad: string) => {
+    const response = await axios.get(`${API_URL}/api/Cita/especialidad/${especialidad}`);
+    return response.data;
+};
+
+export const actualizarDisponibilidad = async (id: number, disponible: string) => {
+    const response = await axios.put(`${API_URL}/api/Cita/disponibilidad/${id}`, {disponible});
+    return response.data;
+}
 
 
 /* GET
