@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/sheet'
 import { Medico } from '../data/tasks'
 import * as medicoService from '@/lib/service/medico.service'
+import { Especialidades } from '@/constants/data'
 
 
 
@@ -114,10 +115,7 @@ export function MedicoMutateDrawer({ open, onOpenChange, currentRow }: Props) {
                     defaultValue={field.value}
                     onValueChange={field.onChange}
                     placeholder='Seleccione una especialidad'
-                    items={[
-                      { label: 'Medicina general', value: 'medicina_general' },
-                      { label: 'Examen odontológico', value: 'examen_odontologico' },
-                    ]}
+                    items={Especialidades}
                   />
                   <FormMessage />
                 </FormItem>
