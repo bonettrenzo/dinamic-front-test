@@ -3,7 +3,7 @@ import {
   IconLayoutDashboard,
   IconUsers,
 } from '@tabler/icons-react'
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
+import {  Command } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 const userInSesion: any = JSON.parse(localStorage.getItem('auth-storage') || '{}');

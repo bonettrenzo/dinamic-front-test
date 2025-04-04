@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { useAuthStore } from '@/lib/store/auth-store'
 import * as authService from '@/lib/service/auth.service.ts'
-import { toast, ToastContainer } from 'react-toastify';
+import {  ToastContainer } from 'react-toastify';
 
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>
