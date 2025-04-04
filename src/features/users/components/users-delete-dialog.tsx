@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { Cita, User } from '../data/schema'
+import { Cita } from '../data/schema'
 
 interface Props {
   open: boolean
@@ -18,7 +18,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: Props) {
   const [value, setValue] = useState('')
 
   const handleDelete = () => {
-    if (value.trim() !== currentRow.Especialidad) return
+    if (value.trim() !== currentRow.especialidad) return
 
     onOpenChange(false)
     toast({
@@ -38,7 +38,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: Props) {
       open={open}
       onOpenChange={onOpenChange}
       handleConfirm={handleDelete}
-      disabled={value.trim() !== currentRow.Especialidad}
+      disabled={value.trim() !== currentRow.especialidad}
       title={
         <span className='text-destructive'>
           <IconAlertTriangle
@@ -52,7 +52,7 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: Props) {
         <div className='space-y-4'>
           <p className='mb-2'>
             Are you sure you want to delete{' '}
-            <span className='font-bold'>{currentRow.Especialidad}</span>?
+            <span className='font-bold'>{currentRow.especialidad}</span>?
             <br />
             This action will permanently remove the user with the role of{' '}
        

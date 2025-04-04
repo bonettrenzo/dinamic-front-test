@@ -3,8 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import LongText from '@/components/long-text';
 import { DataTableColumnHeader } from './data-table-column-header';
-import { DataTableRowActions } from './data-table-row-actions';
-import { Medico } from '@/features/tasks/data/tasks';
 import { ColumnDef } from '@tanstack/react-table';
 import { CITA_ESTADOS } from '@/constants/data';
 import { Cita } from '../data/schema';
@@ -86,7 +84,7 @@ export const columns: ColumnDef<Cita>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Médico' />
     ),
-    cell: ({ row }) => {
+    cell: () => {
 /*       const { nombre } = row.original?.medico;
       return <LongText className='max-w-36'>{nombre}</LongText>; */
     },

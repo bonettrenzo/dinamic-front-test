@@ -23,7 +23,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { SelectDropdown } from '@/components/select-dropdown'
 import * as medicoService from '@/lib/service/medico.service'
-import { use, useEffect, useState } from 'react'
+import {  useEffect, useState } from 'react'
 import { Medico } from '@/features/tasks/data/tasks'
 import { CITA_ESTADOS, Especialidades } from '@/constants/data'
 import * as citasService from '@/lib/service/citas.service'
