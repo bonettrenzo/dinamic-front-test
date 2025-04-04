@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mi-app-react
+    name: frontend
     env: docker
     plan: free
     branch: main
