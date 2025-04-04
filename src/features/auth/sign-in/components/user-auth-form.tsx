@@ -46,8 +46,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true)
     try {
- 
-      const user = await authService.login({documento: data.documento, fechaNacimiento: data.fechaNacimiento})
+      const fecha = new Date(data.fechaNacimiento)
+      const user = await authService.login({documento: data.documento, fechaNacimiento: fecha.toISOString()})
       
       setUser(user)
       navigate({ to: '/' })
