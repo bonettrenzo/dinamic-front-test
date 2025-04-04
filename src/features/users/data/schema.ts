@@ -40,7 +40,7 @@ export const userListSchema = z.array(userSchema)
 export interface Cita{
   id?: number
   especialidad: string
-  FechaHora: Date
+  fechaHora: Date
   estado: string
   IdMedico: number
   medico: Medico

@@ -24,6 +24,7 @@ export default function Dashboard() {
     setCitasByEspecialidad([])
     setSelectedEspecialidad(value)
     citasService.getByEspecialidad(value).then(res => {
+      console.log(res)
       setCitasByEspecialidad(res) 
     })
   }
@@ -115,7 +116,7 @@ export default function Dashboard() {
                     <div>
                       <h2 className='mb-1 font-semibold'>{cita.especialidad}</h2>
                       <p className='text-gray-500'>Médico: {cita.medico.nombre}</p>
-                      <p className='text-gray-500'>Fecha: {new Date(cita.FechaHora).toLocaleString()}</p>
+                      <p className='text-gray-500'>Fecha: {new Date(cita.fechaHora).toLocaleString()}</p>
                     </div>
                   </li>
                 ))}

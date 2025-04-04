@@ -48,10 +48,10 @@ export function CitaDialog({ open, onOpenChange, getCitas }: Props) {
   const form = useForm<CitaForm>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      Especialidad: 'medicina_general',
-      FechaHora: '2025-04-03T09:33',
-      Estado: 'DISPONIBLE',
-      IdMedico: 1,
+      Especialidad: '',
+      FechaHora: '',
+      Estado: '',
+      IdMedico: 0,
     },
   })
 
@@ -72,11 +72,12 @@ export function CitaDialog({ open, onOpenChange, getCitas }: Props) {
 
   const onSubmit = async (values: CitaForm) => {
     form.reset()
+    const localDate = new Date(values.FechaHora)
 
     await citasService.createCita({
       especialidad: values.Especialidad,
       estado: values.Estado,
-      fechaHora: values.FechaHora,
+      fechaHora: localDate.toISOString(),
       idMedico: values.IdMedico,
     })
     getCitas()
